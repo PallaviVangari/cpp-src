@@ -1,0 +1,1 @@
+/opt/homebrew/bin/g++-13 -Wall -fpermissive -O2 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -mmacosx-version-min=14.0 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/serverApp.dir/app/ServerApp.cpp.o -o ../bin/serverApp  ../lib/libbasic_socket.a -lpthread 
