@@ -40,19 +40,31 @@ namespace basic
          return;
 
       const int bufferSize = 1 * 1024 * 1024;
-      //char buffer[bufferSize];
-     // memset(buffer, 'A', sizeof(char) * bufferSize);
+      // char buffer[bufferSize];
+      // memset(buffer, 'A', sizeof(char) * bufferSize);
 
       long long totalBytesToSend = static_cast<long>(bytesToSend) * 1024 * 1024 * 1024;
       long long total_bytes = 0;
 
+      // Convert buffer size to network byte order
+      uint32_t networkByteOrder = htonl(bufferSize);
+
+      // Convert network byte order to bytes
+      char lengthHeader[4];
+      memcpy(lengthHeader, &networkByteOrder, sizeof(networkByteOrder));
+
+      // Now lengthHeader contains the 4-byte message length header
+
+      // Send the header followed by the buffer data
+      send(clt, lengthHeader, sizeof(lengthHeader), 0); // Send the header
+
       auto startTime = std::chrono::system_clock::now();
+      std::string payload(1 * 1024 * 1024, 'A');
 
       // Send data in chunks until totalBytesToSend is reached
       while (total_bytes < totalBytesToSend)
       {
-         //long n = send(this->clt, buffer, bufferSize, 0);
-         std::string payload(1 * 1024 * 1024, 'A');
+         // long n = send(this->clt, buffer, bufferSize, 0);
          long n = send(clt, payload.c_str(), payload.length(), 0);
 
          if (n == -1)

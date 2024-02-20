@@ -78,15 +78,21 @@ namespace basic
     bool SessionHandler::cycle(int clientSocket, long long &chunkSize)
     {
         bool idle = true;
+        char lengthHeader[4];
+        // Convert network byte order to host byte order
+        uint32_t messageLength;
+        memcpy(&messageLength, lengthHeader, sizeof(messageLength));
+        messageLength = ntohl(messageLength);
+
         // Prepare a large buffer to hold the incoming data
         const int bufferSize = 1 * 1024 * 1024; // 1 MB buffer size
         std::vector<char> buffer(bufferSize);
-        //char buffer[bufferSize];
+        // char buffer[bufferSize];
         auto startTime = std::chrono::steady_clock::now(); // Timestamp before receiving data
         while (true)
         {
             // Receive data from the client
-           int bytesRead = recv(clientSocket,buffer.data(), buffer.size(),0);
+            int bytesRead = recv(clientSocket, buffer.data(), buffer.size(), 0);
             if (bytesRead == -1)
             {
                 if (errno == ECONNRESET)
@@ -142,4 +148,4 @@ namespace basic
             this->refreshRate = 0;
         }
     }
- } // namespace basic
+} // namespace basic
